@@ -7,5 +7,5 @@ COLUMNS = [
     "Age",
     "Department",
     "CGPA"
-
+    
 ]
