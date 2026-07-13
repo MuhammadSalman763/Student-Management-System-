@@ -9,7 +9,7 @@ class Student:
         self.cgpa = cgpa
 
     def to_dict(self):
-
+        
         return {
 
             "ID": self.student_id,
