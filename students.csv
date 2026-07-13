@@ -898,7 +898,7 @@ ID,Name,Age,Department,CGPA
 897,Jason Short,25,Data Science,2.23
 898,Shirley Bradley,19,Software Engineering,3.59
 899,Joshua Booth,22,Artificial Intelligence,2.82
-900,Amy Bradley,23,Electrical Engineering,3.48
+900,Salman,25,iict,3.5
 901,Ashley Jackson,18,Business Administration,3.79
 902,Jamie Smith,22,Business Administration,3.52
 903,Douglas Massey,18,Computer Science,3.11
@@ -999,3 +999,4 @@ ID,Name,Age,Department,CGPA
 998,Margaret Schneider,19,Electrical Engineering,2.7
 999,Elaine Ochoa,24,Computer Science,2.19
 1000,Ashley Weber,24,Business Administration,3.21
+1005,Wali ,24,iict,3.5
