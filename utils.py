@@ -4,5 +4,5 @@ def validate_age(age):
 
 
 def validate_cgpa(cgpa):
-
+    
     return 0 <= cgpa <= 4
