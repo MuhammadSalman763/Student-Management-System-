@@ -24,7 +24,7 @@ while True:
         manager.add_student()
 
     elif choice == "2":
-
+        
         manager.view_students()
 
     elif choice == "3":
