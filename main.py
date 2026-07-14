@@ -1,70 +1,145 @@
+from fastapi import FastAPI
+from models import StudentModel
 from student_manager import StudentManager
+
+app = FastAPI(
+    title="Student Management System API",
+    description="Student Management System using FastAPI, Pandas, CSV and Faker",
+    version="1.0.0"
+)
 
 manager = StudentManager()
 
-while True:
 
-    print("\n========== STUDENT MANAGEMENT SYSTEM ==========")
-    print("1. Add Student")
-    print("2. View Students")
-    print("3. Search Student")
-    print("4. Delete Student")
-    print("5. Update Student")
-    print("6. Total Students")
-    print("7. Topper")
-    print("8. Average CGPA")
-    print("9. Generate 1000 Fake Students")
-    print("10. Department Wise Students")
-    print("0. Exit")
+# ==========================================
+# Home
+# ==========================================
 
-    choice = input("Enter Choice : ")
+@app.get("/")
+def home():
 
-    if choice == "1":
+    return {
+        "message": "Welcome to Student Management System API"
+    }
 
-        manager.add_student()
 
-    elif choice == "2":
-        
-        manager.view_students()
+# ==========================================
+# View All Students
+# ==========================================
 
-    elif choice == "3":
+@app.get("/students")
+def get_students():
 
-        manager.search_student()
+    return manager.view_students()
 
-    elif choice == "4":
 
-        manager.delete_student()
+# ==========================================
+# Search Student
+# ==========================================
 
-    elif choice == "5":
+@app.get("/students/{student_id}")
+def search_student(student_id: str):
 
-        manager.update_student()
+    return manager.search_student(student_id)
 
-    elif choice == "6":
 
-        manager.total_students()
+# ==========================================
+# Add Student
+# ==========================================
 
-    elif choice == "7":
+@app.post("/students")
+def add_student(student: StudentModel):
 
-        manager.topper()
+    return manager.add_student(
 
-    elif choice == "8":
+        student.student_id,
 
-        manager.average()
+        student.name,
 
-    elif choice == "9":
+        student.age,
 
-        manager.generate_fake_students()
+        student.department,
 
-    elif choice == "10":
+        student.cgpa
+    )
 
-        manager.department_students()
 
-    elif choice == "0":
+# ==========================================
+# Update Student
+# ==========================================
 
-        print("Thank You!")
+@app.put("/students/{student_id}")
+def update_student(student_id: str, student: StudentModel):
 
-        break
+    return manager.update_student(
 
-    else:
+        student_id,
 
-        print("Invalid Choice.")
+        student.name,
+
+        student.age,
+
+        student.department,
+
+        student.cgpa
+    )
+
+
+# ==========================================
+# Delete Student
+# ==========================================
+
+@app.delete("/students/{student_id}")
+def delete_student(student_id: str):
+
+    return manager.delete_student(student_id)
+
+
+# ==========================================
+# Total Students
+# ==========================================
+
+@app.get("/total")
+def total_students():
+
+    return manager.total_students()
+
+
+# ==========================================
+# Topper
+# ==========================================
+
+@app.get("/topper")
+def topper():
+
+    return manager.topper()
+
+
+# ==========================================
+# Average CGPA
+# ==========================================
+
+@app.get("/average")
+def average():
+
+    return manager.average()
+
+
+# ==========================================
+# Department Wise Students
+# ==========================================
+
+@app.get("/departments")
+def department_students():
+
+    return manager.department_students()
+
+
+# ==========================================
+# Generate Fake Students
+# ==========================================
+
+@app.post("/faker")
+def generate_fake_students():
+
+    return manager.generate_fake_students()
