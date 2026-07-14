@@ -4,12 +4,6 @@ from faker import Faker
 import random
 import pandas as pd
 
-from utils import (
-    validate_student_id,
-    validate_age,
-    validate_cgpa
-)
-
 
 class StudentManager:
 
@@ -23,59 +17,54 @@ class StudentManager:
     # ==========================================
     def add_student(self):
 
-        student_id = input("Enter Student ID : ")
+        try:
 
-        if not validate_student_id(student_id):
-            print("Invalid Student ID! ID must be greater than 0.")
-            return
+            student_id = input("Enter Student ID : ")
 
-        df = self.file.read_file()
+            df = self.file.read_file()
 
-        if student_id in df["ID"].astype(str).values:
-            print("Student ID Already Exists!")
-            return
+            if student_id in df["ID"].astype(str).values:
+                print("Student ID Already Exists!")
+                return
 
-        name = input("Enter Name : ").strip()
+            name = input("Enter Name : ")
 
-        if not name:
-            print("Name cannot be empty.")
-            return
+            age = int(input("Enter Age : "))
 
-        age = input("Enter Age : ")
+            department = input("Enter Department : ")
 
-        if not validate_age(age):
-            print("Invalid Age! Age must be between 18 and 30.")
-            return
+            while True:
 
-        age = int(age)
+                try:
 
-        department = input("Enter Department : ").strip()
+                    cgpa = float(input("Enter CGPA (0 - 4): "))
 
-        if not department:
-            print("Department cannot be empty.")
-            return
+                    if 0 <= cgpa <= 4:
+                        break
 
-        cgpa = input("Enter CGPA (0 - 4): ")
+                    print("CGPA must be between 0 and 4.")
 
-        if not validate_cgpa(cgpa):
-            print("Invalid CGPA!")
-            return
+                except ValueError:
 
-        cgpa = float(cgpa)
+                    print("Invalid CGPA.")
 
-        student = Student(
-            student_id,
-            name,
-            age,
-            department,
-            cgpa
-        )
+            student = Student(
+                student_id,
+                name,
+                age,
+                department,
+                cgpa
+            )
 
-        df.loc[len(df)] = student.to_dict()
+            df.loc[len(df)] = student.to_dict()
 
-        self.file.save_file(df)
+            self.file.save_file(df)
 
-        print("Student Added Successfully.")
+            print("Student Added Successfully.")
+
+        except ValueError:
+
+            print("Age must be an integer.")
 
     # ==========================================
     # View Students
@@ -99,10 +88,6 @@ class StudentManager:
 
         student_id = input("Enter Student ID : ")
 
-        if not validate_student_id(student_id):
-            print("Invalid Student ID!")
-            return
-
         df = self.file.read_file()
 
         result = df[df["ID"].astype(str) == student_id]
@@ -122,10 +107,6 @@ class StudentManager:
 
         student_id = input("Enter Student ID : ")
 
-        if not validate_student_id(student_id):
-            print("Invalid Student ID!")
-            return
-
         df = self.file.read_file()
 
         if student_id not in df["ID"].astype(str).values:
@@ -139,54 +120,57 @@ class StudentManager:
         self.file.save_file(df)
 
         print("Student Deleted Successfully.")
-            # ==========================================
+
+    # ==========================================
     # Update Student
     # ==========================================
     def update_student(self):
 
         student_id = input("Enter Student ID : ")
 
-        if not validate_student_id(student_id):
-            print("Invalid Student ID!")
-            return
-
         df = self.file.read_file()
 
         if student_id not in df["ID"].astype(str).values:
 
             print("Student Not Found.")
-            return
+
+            return 
 
         index = df[df["ID"].astype(str) == student_id].index[0]
 
         print("\nLeave blank if you don't want to update.\n")
 
-        name = input("New Name : ").strip()
-        age = input("New Age : ").strip()
-        department = input("New Department : ").strip()
-        cgpa = input("New CGPA : ").strip()
+        name = input("New Name : ")
+
+        age = input("New Age : ")
+
+        department = input("New Department : ")
+
+        cgpa = input("New CGPA : ")
 
         if name:
+
             df.loc[index, "Name"] = name
 
         if age:
 
-            if not validate_age(age):
-                print("Invalid Age! Age must be between 18 and 30.")
-                return
-
             df.loc[index, "Age"] = int(age)
 
         if department:
+
             df.loc[index, "Department"] = department
 
         if cgpa:
 
-            if not validate_cgpa(cgpa):
-                print("Invalid CGPA! CGPA must be between 0 and 4.")
-                return
+            cgpa = float(cgpa)
 
-            df.loc[index, "CGPA"] = float(cgpa)
+            if 0 <= cgpa <= 4:
+
+                df.loc[index, "CGPA"] = cgpa
+
+            else:
+
+                print("Invalid CGPA")
 
         self.file.save_file(df)
 
@@ -211,11 +195,10 @@ class StudentManager:
         if df.empty:
 
             print("No Students Found.")
+
             return
 
         highest = df["CGPA"].max()
-
-        print("\nTopper Student:\n")
 
         print(df[df["CGPA"] == highest])
 
@@ -229,8 +212,76 @@ class StudentManager:
         if df.empty:
 
             print("No Students Found.")
+
             return
 
-        average_cgpa = round(df["CGPA"].mean(), 2)
+        print("Average CGPA :", round(df["CGPA"].mean(), 2))
 
-        print(f"\nAverage CGPA : {average_cgpa}")
+    # ==========================================
+    # Department Wise Students
+    # ==========================================
+    def department_students(self):
+
+        df = self.file.read_file()
+
+        if df.empty:
+
+            print("No Students Found.")
+
+            return
+
+        print(df.groupby("Department").size())
+
+    # ==========================================
+    # Generate 1000 Fake Students
+    # ==========================================
+    def generate_fake_students(self):
+
+        df = self.file.read_file()
+
+        departments = [
+            "Computer Science",
+            "Software Engineering",
+            "Information Technology",
+            "Artificial Intelligence",
+            "Cyber Security",
+            "Data Science",
+            "Business Administration",
+            "Electrical Engineering"
+        ]
+
+        if df.empty:
+
+            next_id = 1
+
+        else:
+
+            next_id = int(df["ID"].astype(int).max()) + 1
+
+        students = []
+
+        for i in range(1000):
+
+            student = Student(
+
+                str(next_id + i),
+
+                self.fake.name(),
+
+                random.randint(18, 25),
+
+                random.choice(departments),
+
+                round(random.uniform(2.00, 4.00), 2)
+
+            )
+
+            students.append(student.to_dict())
+
+        new_df = pd.DataFrame(students)
+
+        df = pd.concat([df, new_df], ignore_index=True)
+
+        self.file.save_file(df)
+
+        print("1000 Fake Students Generated Successfully.")
