@@ -1,6 +1,5 @@
-import pandas as pd
 import os
-
+import pandas as pd
 from config import FILE_NAME, COLUMNS
 
 
@@ -15,9 +14,9 @@ class FileHandler:
             df.to_csv(FILE_NAME, index=False)
 
     def read_file(self):
-        
+
         return pd.read_csv(FILE_NAME)
 
-    def save_file(self, df):
+    def save_file(self, dataframe):
 
-        df.to_csv(FILE_NAME, index=False)
+        dataframe.to_csv(FILE_NAME, index=False)
