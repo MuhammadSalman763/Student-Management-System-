@@ -60,7 +60,7 @@ while True:
         manager.department_students()
 
     elif choice == "0":
-
+        
         print("Thank You!")
 
         break
