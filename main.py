@@ -1,70 +1,135 @@
+from fastapi import FastAPI
+from models import StudentModel
 from student_manager import StudentManager
+
+app = FastAPI(
+    title="Student Management System API",
+    description="Student Management System using FastAPI, Pandas, CSV and Faker",
+    version="1.0.0"
+)
 
 manager = StudentManager()
 
-while True:
+# ==========================================
+# Home
+# ==========================================
 
-    print("\n========== STUDENT MANAGEMENT SYSTEM ==========")
-    print("1. Add Student")
-    print("2. View Students")
-    print("3. Search Student")
-    print("4. Delete Student")
-    print("5. Update Student")
-    print("6. Total Students")
-    print("7. Topper")
-    print("8. Average CGPA")
-    print("9. Generate 1000 Fake Students")
-    print("10. Department Wise Students")
-    print("0. Exit")
+@app.get("/")
+def home():
 
-    choice = input("Enter Choice : ")
+    return {
+        "message": "Welcome to Student Management System API"
+    }
 
-    if choice == "1":
 
-        manager.add_student()
+# ==========================================
+# View All Students
+# ==========================================
 
-    elif choice == "2":
-        
-        manager.view_students()
+@app.get("/students")
+def get_students():
 
-    elif choice == "3":
+    return manager.view_students()
 
-        manager.search_student()
 
-    elif choice == "4":
+# ==========================================
+# Add Student
+# ==========================================
 
-        manager.delete_student()
+@app.post("/students")
+def add_student(student: StudentModel):
 
-    elif choice == "5":
+    return manager.add_student(
+        student.student_id,
+        student.name,
+        student.age,
+        student.department,
+        student.cgpa
+    )
 
-        manager.update_student()
 
-    elif choice == "6":
+# ==========================================
+# Total Students
+# ==========================================
 
-        manager.total_students()
+@app.get("/students/total")
+def total_students():
 
-    elif choice == "7":
+    return manager.total_students()
 
-        manager.topper()
 
-    elif choice == "8":
+# ==========================================
+# Topper
+# ==========================================
 
-        manager.average()
+@app.get("/students/topper")
+def topper():
 
-    elif choice == "9":
+    return manager.topper()
 
-        manager.generate_fake_students()
 
-    elif choice == "10":
+# ==========================================
+# Average CGPA
+# ==========================================
 
-        manager.department_students()
+@app.get("/students/average")
+def average():
 
-    elif choice == "0":
-        
-        print("Thank You!")
+    return manager.average()
 
-        break
 
-    else:
+# ==========================================
+# Department Wise Students
+# ==========================================
 
-        print("Invalid Choice.")
+@app.get("/students/departments")
+def department_students():
+
+    return manager.department_students()
+
+
+# ==========================================
+# Generate Fake Students
+# ==========================================
+
+@app.post("/students/faker")
+def generate_fake_students():
+
+    return manager.generate_fake_students()
+
+
+# ==========================================
+# Update Student
+# ==========================================
+
+@app.put("/students/{student_id}")
+def update_student(student_id: int, student: StudentModel):
+
+    return manager.update_student(
+        student_id,
+        student.name,
+        student.age,
+        student.department,
+        student.cgpa
+    )
+
+
+# ==========================================
+# Delete Student
+# ==========================================
+
+@app.delete("/students/{student_id}")
+def delete_student(student_id: int):
+
+    return manager.delete_student(student_id)
+
+
+# ==========================================
+# Search Student
+# Keep this LAST
+# ==========================================
+
+@app.get("/students/{student_id}")
+def search_student(student_id: int):
+
+    return manager.search_student(student_id)
