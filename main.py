@@ -16,7 +16,6 @@ manager = StudentManager()
 
 @app.get("/")
 def home():
-
     return {
         "message": "Welcome to Student Management System API"
     }
@@ -28,7 +27,6 @@ def home():
 
 @app.get("/students")
 def get_students():
-
     return manager.view_students()
 
 
@@ -38,7 +36,6 @@ def get_students():
 
 @app.post("/students")
 def add_student(student: StudentModel):
-
     return manager.add_student(
         student.student_id,
         student.name,
@@ -54,7 +51,6 @@ def add_student(student: StudentModel):
 
 @app.get("/students/total")
 def total_students():
-
     return manager.total_students()
 
 
@@ -64,7 +60,6 @@ def total_students():
 
 @app.get("/students/topper")
 def topper():
-
     return manager.topper()
 
 
@@ -74,7 +69,6 @@ def topper():
 
 @app.get("/students/average")
 def average():
-
     return manager.average()
 
 
@@ -84,7 +78,6 @@ def average():
 
 @app.get("/students/departments")
 def department_students():
-
     return manager.department_students()
 
 
@@ -94,7 +87,6 @@ def department_students():
 
 @app.post("/students/faker")
 def generate_fake_students():
-
     return manager.generate_fake_students()
 
 
@@ -104,7 +96,6 @@ def generate_fake_students():
 
 @app.put("/students/{student_id}")
 def update_student(student_id: int, student: StudentModel):
-
     return manager.update_student(
         student_id,
         student.name,
@@ -120,16 +111,14 @@ def update_student(student_id: int, student: StudentModel):
 
 @app.delete("/students/{student_id}")
 def delete_student(student_id: int):
-
     return manager.delete_student(student_id)
 
 
 # ==========================================
 # Search Student
-# Keep this LAST
+# Keep this route LAST
 # ==========================================
 
 @app.get("/students/{student_id}")
 def search_student(student_id: int):
-
     return manager.search_student(student_id)
