@@ -1,2 +1,5 @@
-pandas
 fastapi
+uvicorn
+pandas
+faker
+pydantic
