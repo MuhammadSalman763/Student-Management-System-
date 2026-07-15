@@ -10,7 +10,6 @@ app = FastAPI(
 
 manager = StudentManager()
 
-
 # ==========================================
 # Home
 # ==========================================
@@ -34,16 +33,6 @@ def get_students():
 
 
 # ==========================================
-# Search Student
-# ==========================================
-
-@app.get("/students/{student_id}")
-def search_student(student_id: str):
-
-    return manager.search_student(student_id)
-
-
-# ==========================================
 # Add Student
 # ==========================================
 
@@ -51,55 +40,19 @@ def search_student(student_id: str):
 def add_student(student: StudentModel):
 
     return manager.add_student(
-
         student.student_id,
-
         student.name,
-
         student.age,
-
         student.department,
-
         student.cgpa
     )
-
-
-# ==========================================
-# Update Student
-# ==========================================
-
-@app.put("/students/{student_id}")
-def update_student(student_id: str, student: StudentModel):
-
-    return manager.update_student(
-
-        student_id,
-
-        student.name,
-
-        student.age,
-
-        student.department,
-
-        student.cgpa
-    )
-
-
-# ==========================================
-# Delete Student
-# ==========================================
-
-@app.delete("/students/{student_id}")
-def delete_student(student_id: str):
-
-    return manager.delete_student(student_id)
 
 
 # ==========================================
 # Total Students
 # ==========================================
 
-@app.get("/total")
+@app.get("/students/total")
 def total_students():
 
     return manager.total_students()
@@ -109,7 +62,7 @@ def total_students():
 # Topper
 # ==========================================
 
-@app.get("/topper")
+@app.get("/students/topper")
 def topper():
 
     return manager.topper()
@@ -119,7 +72,7 @@ def topper():
 # Average CGPA
 # ==========================================
 
-@app.get("/average")
+@app.get("/students/average")
 def average():
 
     return manager.average()
@@ -129,7 +82,7 @@ def average():
 # Department Wise Students
 # ==========================================
 
-@app.get("/departments")
+@app.get("/students/departments")
 def department_students():
 
     return manager.department_students()
@@ -139,7 +92,44 @@ def department_students():
 # Generate Fake Students
 # ==========================================
 
-@app.post("/faker")
+@app.post("/students/faker")
 def generate_fake_students():
 
     return manager.generate_fake_students()
+
+
+# ==========================================
+# Update Student
+# ==========================================
+
+@app.put("/students/{student_id}")
+def update_student(student_id: int, student: StudentModel):
+
+    return manager.update_student(
+        student_id,
+        student.name,
+        student.age,
+        student.department,
+        student.cgpa
+    )
+
+
+# ==========================================
+# Delete Student
+# ==========================================
+
+@app.delete("/students/{student_id}")
+def delete_student(student_id: int):
+
+    return manager.delete_student(student_id)
+
+
+# ==========================================
+# Search Student
+# Keep this LAST
+# ==========================================
+
+@app.get("/students/{student_id}")
+def search_student(student_id: int):
+
+    return manager.search_student(student_id)
