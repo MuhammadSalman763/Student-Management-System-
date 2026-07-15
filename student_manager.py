@@ -1,8 +1,8 @@
 from student import Student
 from file_handler import FileHandler
 from faker import Faker
-import pandas as pd
 import random
+import pandas as pd
 
 
 class StudentManager:
@@ -15,59 +15,78 @@ class StudentManager:
     # ==========================================
     # Add Student
     # ==========================================
+    def add_student(self):
 
-    def add_student(self, student_id, name, age, department, cgpa):
+        try:
 
-        df = self.file.read_file()
+            student_id = input("Enter Student ID : ")
 
-        if student_id in df["ID"].astype(str).values:
-            return {
-                "success": False,
-                "message": "Student ID Already Exists"
-            }
+            df = self.file.read_file()
 
-        if cgpa < 0 or cgpa > 4:
-            return {
-                "success": False,
-                "message": "CGPA must be between 0 and 4"
-            }
+            if student_id in df["ID"].astype(str).values:
+                print("Student ID Already Exists!")
+                return
 
-        student = Student(
-            student_id,
-            name,
-            age,
-            department,
-            cgpa
-        )
+            name = input("Enter Name : ")
 
-        df.loc[len(df)] = student.to_dict()
+            age = int(input("Enter Age : "))
 
-        self.file.save_file(df)
+            department = input("Enter Department : ")
 
-        return {
-            "success": True,
-            "message": "Student Added Successfully"
-        }
+            while True:
+
+                try:
+
+                    cgpa = float(input("Enter CGPA (0 - 4): "))
+
+                    if 0 <= cgpa <= 4:
+                        break
+
+                    print("CGPA must be between 0 and 4.")
+
+                except ValueError:
+
+                    print("Invalid CGPA.")
+
+            student = Student(
+                student_id,
+                name,
+                age,
+                department,
+                cgpa
+            )
+
+            df.loc[len(df)] = student.to_dict()
+
+            self.file.save_file(df)
+
+            print("Student Added Successfully.")
+
+        except ValueError:
+
+            print("Age must be an integer.")
 
     # ==========================================
     # View Students
     # ==========================================
-
     def view_students(self):
 
         df = self.file.read_file()
 
         if df.empty:
 
-            return []
+            print("No Students Found.")
 
-        return df.to_dict(orient="records")
+        else:
+
+            print(df)
 
     # ==========================================
     # Search Student
     # ==========================================
+    def search_student(self):
 
-    def search_student(self, student_id):
+        student_id = input("Enter Student ID : ")
 
         df = self.file.read_file()
 
@@ -75,150 +94,147 @@ class StudentManager:
 
         if result.empty:
 
-            return {
-                "success": False,
-                "message": "Student Not Found"
-            }
+            print("Student Not Found.")
 
-        return result.to_dict(orient="records")
+        else:
+
+            print(result)
 
     # ==========================================
     # Delete Student
     # ==========================================
+    def delete_student(self):
 
-    def delete_student(self, student_id):
+        student_id = input("Enter Student ID : ")
 
         df = self.file.read_file()
 
         if student_id not in df["ID"].astype(str).values:
 
-            return {
-                "success": False,
-                "message": "Student Not Found"
-            }
+            print("Student Not Found.")
+
+            return
 
         df = df[df["ID"].astype(str) != student_id]
 
         self.file.save_file(df)
 
-        return {
-            "success": True,
-            "message": "Student Deleted Successfully"
-        }
-        # ==========================================
+        print("Student Deleted Successfully.")
+
+    # ==========================================
     # Update Student
     # ==========================================
+    def update_student(self):
 
-    def update_student(self, student_id, name=None, age=None, department=None, cgpa=None):
+        student_id = input("Enter Student ID : ")
 
         df = self.file.read_file()
 
         if student_id not in df["ID"].astype(str).values:
 
-            return {
-                "success": False,
-                "message": "Student Not Found"
-            }
+            print("Student Not Found.")
+
+            return 
 
         index = df[df["ID"].astype(str) == student_id].index[0]
 
-        if name is not None:
+        print("\nLeave blank if you don't want to update.\n")
+
+        name = input("New Name : ")
+
+        age = input("New Age : ")
+
+        department = input("New Department : ")
+
+        cgpa = input("New CGPA : ")
+
+        if name:
+
             df.loc[index, "Name"] = name
 
-        if age is not None:
-            df.loc[index, "Age"] = age
+        if age:
 
-        if department is not None:
+            df.loc[index, "Age"] = int(age)
+
+        if department:
+
             df.loc[index, "Department"] = department
 
-        if cgpa is not None:
+        if cgpa:
 
-            if cgpa < 0 or cgpa > 4:
+            cgpa = float(cgpa)
 
-                return {
-                    "success": False,
-                    "message": "CGPA must be between 0 and 4"
-                }
+            if 0 <= cgpa <= 4:
 
-            df.loc[index, "CGPA"] = cgpa
+                df.loc[index, "CGPA"] = cgpa
+
+            else:
+
+                print("Invalid CGPA")
 
         self.file.save_file(df)
 
-        return {
-            "success": True,
-            "message": "Student Updated Successfully"
-        }
+        print("Student Updated Successfully.")
 
     # ==========================================
     # Total Students
     # ==========================================
-
     def total_students(self):
 
         df = self.file.read_file()
 
-        return {
-            "Total Students": len(df)
-        }
+        print("\nTotal Students :", len(df))
 
     # ==========================================
     # Topper
     # ==========================================
-
     def topper(self):
 
         df = self.file.read_file()
 
         if df.empty:
 
-            return {
-                "message": "No Students Found"
-            }
+            print("No Students Found.")
+
+            return
 
         highest = df["CGPA"].max()
 
-        topper = df[df["CGPA"] == highest]
-
-        return topper.to_dict(orient="records")
+        print(df[df["CGPA"] == highest])
 
     # ==========================================
     # Average CGPA
     # ==========================================
-
     def average(self):
 
         df = self.file.read_file()
 
         if df.empty:
 
-            return {
-                "Average CGPA": 0
-            }
+            print("No Students Found.")
 
-        return {
-            "Average CGPA": round(df["CGPA"].mean(), 2)
-        }
+            return
+
+        print("Average CGPA :", round(df["CGPA"].mean(), 2))
 
     # ==========================================
     # Department Wise Students
     # ==========================================
-
     def department_students(self):
 
         df = self.file.read_file()
 
         if df.empty:
 
-            return {}
+            print("No Students Found.")
 
-        result = df.groupby("Department").size()
+            return
 
-        return result.to_dict()
+        print(df.groupby("Department").size())
 
     # ==========================================
     # Generate 1000 Fake Students
     # ==========================================
-
     def generate_fake_students(self):
 
         df = self.file.read_file()
@@ -268,8 +284,4 @@ class StudentManager:
 
         self.file.save_file(df)
 
-        return {
-            "success": True,
-            "message": "1000 Fake Students Generated Successfully"
-        }
-    
+        print("1000 Fake Students Generated Successfully.")

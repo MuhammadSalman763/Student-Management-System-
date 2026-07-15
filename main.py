@@ -142,4 +142,4 @@ def department_students():
 @app.post("/faker")
 def generate_fake_students():
 
-    return manager.generate_fake_students() 
+    return manager.generate_fake_students()
